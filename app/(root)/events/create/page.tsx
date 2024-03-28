@@ -2,11 +2,10 @@ import { EventForm } from "@/components/shared/event-form";
 import { auth,currentUser } from "@clerk/nextjs";
 
 const CreateEvent = () => {
-  // const { sessionClaims } = auth();
+  const { sessionClaims } = auth();
   
-  // const userId = sessionClaims?.userId as string;
-  const user =  await currentUser();
-  const userId = user?.id as string;
+  const userId = sessionClaims?.userId as string;
+
   return (
     <>
       <section className="bg-primary-50 bg-dotted-pattern bg-cover bg-center py-5 md:py-10">
