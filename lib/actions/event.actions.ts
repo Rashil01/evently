@@ -16,6 +16,7 @@ import type {
   GetRelatedEventsByCategoryParams,
 } from "@/types";
 import { ObjectId } from "mongodb";
+import { currentUser } from "@clerk/nextjs";
 
 const getCategoryByName = async (name: string) => {
   return Category.findOne({ name: { $regex: name, $options: "i" } });
@@ -36,14 +37,14 @@ export async function createEvent({ userId, event, path }: CreateEventParams) {
   try {
     await connectToDatabase();
     
-  
-    const organizer = await User.findById(userId);
+    const user = await currentUser();
+    const organizer = await User.findOne({clerkId:user?.id});
     if (!organizer) throw new Error("Organizer not found");
 
     const newEvent = await Event.create({
       ...event,
       category: event.categoryId,
-      organizer: userId
+      organizer: organizer?._id
     });
     revalidatePath(path);
 
