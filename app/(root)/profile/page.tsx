@@ -8,11 +8,13 @@ import { getOrdersByUser } from "@/lib/actions/order.actions";
 import { cn } from "@/lib/utils";
 import type { IOrder } from "@/lib/database/models/order.model";
 import type { SearchParamProps } from "@/types";
+import { currentUser } from "@clerk/nextjs";
 
 const Profile = async ({ searchParams }: SearchParamProps) => {
   const { sessionClaims } = auth();
-  const userId = sessionClaims?.userId as string;
-
+  // const userId = sessionClaims?.userId as string;
+const user =await currentUser();
+const userId =  user?.id
   const ordersPage = Number(searchParams?.ordersPage) || 1;
   const eventsPage = Number(searchParams?.eventsPage) || 1;
 
