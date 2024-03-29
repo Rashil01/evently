@@ -35,7 +35,8 @@ const populateEvent = (query: any) => {
 export async function createEvent({ userId, event, path }: CreateEventParams) {
   try {
     await connectToDatabase();
-    const organizerId = new ObjectId(userId);
+    
+    const organizerId = ObjectId.createFromHexString(userId);
     const organizer = await User.findById(organizerId);
     if (!organizer) throw new Error("Organizer not found");
 
