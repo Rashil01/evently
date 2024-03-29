@@ -15,6 +15,7 @@ import type {
   GetEventsByUserParams,
   GetRelatedEventsByCategoryParams,
 } from "@/types";
+import { ObjectId } from "mongodb";
 
 const getCategoryByName = async (name: string) => {
   return Category.findOne({ name: { $regex: name, $options: "i" } });
@@ -34,14 +35,14 @@ const populateEvent = (query: any) => {
 export async function createEvent({ userId, event, path }: CreateEventParams) {
   try {
     await connectToDatabase();
-
-    const organizer = await User.findOne({clerkId:userId});
+    const organizerId = new ObjectId(userId);
+    const organizer = await User.findById(organizerId);
     if (!organizer) throw new Error("Organizer not found");
 
     const newEvent = await Event.create({
       ...event,
       category: event.categoryId,
-      organizer: organizer?_id
+      organizer: userId
     });
     revalidatePath(path);
 
